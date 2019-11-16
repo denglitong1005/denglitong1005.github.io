@@ -5,16 +5,16 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://softengine.rs/"/>
+  <link href="denglitong.com/"/>
   <updated>2019-11-03T15:11:48.539Z</updated>
-  <id>http://softengine.rs/</id>
+  <id>denglitong.com/</id>
   
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
     <title>JS长整型精度问题引发的一个Bug</title>
-    <link href="http://softengine.rs/2019/11/03/js-floating-point-precision/"/>
-    <id>http://softengine.rs/2019/11/03/js-floating-point-precision/</id>
+    <link href="denglitong.com/2019/11/03/js-floating-point-precision/"/>
+    <id>denglitong.com/2019/11/03/js-floating-point-precision/</id>
     <published>2019-11-03T13:10:17.000Z</published>
     <updated>2019-11-03T15:11:48.539Z</updated>
     
@@ -27,19 +27,19 @@
     </summary>
     
     
-      <category term="Web" scheme="http://softengine.rs/categories/Web/"/>
+      <category term="Web" scheme="denglitong.com/categories/Web/"/>
     
-      <category term="Front-end" scheme="http://softengine.rs/categories/Front-end/"/>
+      <category term="Front-end" scheme="denglitong.com/categories/Front-end/"/>
     
     
-      <category term="JS" scheme="http://softengine.rs/tags/JS/"/>
+      <category term="JS" scheme="denglitong.com/tags/JS/"/>
     
   </entry>
   
   <entry>
     <title>朝花夕拾</title>
-    <link href="http://softengine.rs/2019/08/31/first-post/"/>
-    <id>http://softengine.rs/2019/08/31/first-post/</id>
+    <link href="denglitong.com/2019/08/31/first-post/"/>
+    <id>denglitong.com/2019/08/31/first-post/</id>
     <published>2019-08-31T08:15:40.000Z</published>
     <updated>2019-09-01T16:32:03.977Z</updated>
     
