@@ -89,16 +89,16 @@
 <meta property="og:site_name" content="梧桐树下">
 <meta property="og:description" content="上篇博文里谈到，我最近在做的是组内的一个客服场景下的即时聊天框，前两周的周五赶马上线了。在测试环境测试一切正常，上线后…就翻车了…当时赶着上线，是在周五开完周会之后我和另一个组员一起上线的。那晚数据库还是临时找DBA给申请的，然后上线后我才把之前一条应该刷的SQL给刷了…所以赶着上线真的不是一件好事，在实际开发过程中要尽量避免，这次案例就引以为戒吧。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="/images/mysql_transaction.zero_id.png">
-<meta property="og:image" content="/images/mysql_transaction.insert_group.png">
-<meta property="og:image" content="/images/mysql_transaction.select_insert.png">
-<meta property="og:image" content="/images/mysql_transaction.miproxy_validate.png">
-<meta property="og:image" content="/images/mysql_transaction.service_transactional.png">
-<meta property="og:updated_time" content="2019-11-16T09:01:05.089Z">
+<meta property="og:image" content="/images/mysql-transacion-with-proxy/zero_id.png">
+<meta property="og:image" content="/images/mysql-transacion-with-proxy/insert_group.png">
+<meta property="og:image" content="/images/mysql-transacion-with-proxy/select_insert.png">
+<meta property="og:image" content="/images/mysql-transacion-with-proxy/miproxy_validate.png">
+<meta property="og:image" content="/images/mysql-transacion-with-proxy/service_transactional.png">
+<meta property="og:updated_time" content="2019-11-16T16:02:23.803Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL事务引发的一次线上Bug">
 <meta name="twitter:description" content="上篇博文里谈到，我最近在做的是组内的一个客服场景下的即时聊天框，前两周的周五赶马上线了。在测试环境测试一切正常，上线后…就翻车了…当时赶着上线，是在周五开完周会之后我和另一个组员一起上线的。那晚数据库还是临时找DBA给申请的，然后上线后我才把之前一条应该刷的SQL给刷了…所以赶着上线真的不是一件好事，在实际开发过程中要尽量避免，这次案例就引以为戒吧。">
-<meta name="twitter:image" content="/images/mysql_transaction.zero_id.png">
+<meta name="twitter:image" content="/images/mysql-transacion-with-proxy/zero_id.png">
 
 
 
@@ -438,18 +438,18 @@
 <a id="more"></a>
 <p>先来描述一下故障表现：我们上线之后，在用户向服务方发起在线咨询时后台会生成一个群聊记录 <code>os_group</code>，此时问题就出现了，前端调用接口获取到的群聊成员列表都是空的，用户发起群聊后却看不到群聊中的任何成员，数据异常，而且多次测试中还偶然有正常的。</p>
 <p>到这里是我们始料未及的，在测试环境我们测试了一周都没有出现这个现象，此时我的第一反应，在确认接口返回的数据确实有问题后，先在脑海里过一遍，有没有可能是代码哪个环节没考虑到导致了这个问题。在确定没有直接能判断到可能的源头后，开始了排查。首先通过跳板机连接到线上的数据查看相关的数据是否插入正常，一查询发现获取群成员列表接口中的 <code>group_id: 0</code> 在数据库表中确实也是0，这基本就锁定了是我们连MySQL出了问题。异常的数据截图如下：<br>
-<img src="/images/mysql_transaction.zero_id.png" alt></p>
-<p>接着顺藤摸瓜，找到了代码中插入群聊的位置：<br>
-<img src="/images/mysql_transaction.insert_group.png" alt></p>
+<img src="/images/mysql-transacion-with-proxy/zero_id.png" alt><br>
+接着顺藤摸瓜，找到了代码中插入群聊的位置：<br>
+<img src="/images/mysql-transacion-with-proxy/insert_group.png" alt></p>
 <p>这里解释一下：75行之前把要创建群聊的前置条件都准备好，然后调用 <code>dao.insertSelective(groupDO)</code> 进行数据插入，初始化好群聊记录后，接着初始化群成员关系 <code>initGroupUsers()</code>，其中就用到了群聊Id <code>groupDO.getId()</code>。用过ORM框架的朋友们都知道，<code>insert</code> 方法都会将插入那行数据的 <code>id</code> 返回并设置到dao对象中，在此处也即 <code>groupDO</code> 中，然后后续初始化群成员关系的时候就会用到。问题也就是出现在这里，插入后的dao对象的id从效果上看并没有返回设置对应的id，导致初始化群成员关系的时候 <code>group_id</code> 都是0，从而导致了在前端页面数据异常，新建的群聊没有任何成员显示。</p>
 <p>到这里问题基本就确定了，是MySQL连接的问题。一开始我们怀疑是临时申请的数据库哪个设置没配（因为在申请数据库的时候DBA跟我说还有一个操作是初始化），不过在和DBA拉群沟通的时候，DBA表示配置都是标准化的并没有遗漏。这时我的另一个组员，也就是这次一起上线的那位，说他之前就遇到过一次DBA申请的数据库在挂了MiProxy之后存在数据同步不一致的问题（MiProxy是MySQL前面的一层代理，是DBA用来做负载均衡的，如果直接连接MySQL后端的话是没有负载均衡的）。这时候我们继续跟DBA沟通，DBA让我们优先排查代码的问题，虽然之前MiProxy出现过主从同步不一致的问题，但遇到客户端不兼容的情况还是极少的。并让我们贴出了有问题的代码：<br>
-<img src="/images/mysql_transaction.select_insert.png" alt></p>
+<img src="/images/mysql-transacion-with-proxy/select_insert.png" alt></p>
 <p>这段代码看起来没有问题，先insert然后再select最新的LAST_INSERT_ID()。这时候我们分别去验证数据库连接的问题：DBA验证MiProxy的问题，我们验证程序的问题，我们在线上把这个组件的数据库切换到staging环境后就好了，插入的id是能查到的不再为空了，同时DBA那边也用脚本验证了MiProxy的连接是没有问题的：<br>
-<img src="/images/mysql_transaction.miproxy_validate.png" alt></p>
+<img src="/images/mysql-transacion-with-proxy/miproxy_validate.png" alt></p>
 <p>到这里我们综合以上信息，脚本使用pymysql.connect()连接线上MiProxy，在同一个打开的connection里面insert/select都是没有问题的；而程序中使用了MyBatis Plus进行连接MiProxy就有问题，但是程序连接staging环境的库没有问题，同时线上库和staging库的区别在于一个是直连的、一个是使用MiProxy连接的；再结合多次测试中还是偶有能正确插入的，这个时候我们就想到可能是MySQL连接多线程的问题，使用单个连接没有问题，可以排除数据库配置、驱动版本的问题，而使用MiProxy连接后就不正常了，MiProxy提供代理能力，其后面屏蔽掉了可能有多个mysql connection线程，而程序代码中的select/inset有2次读写操作，需要先写入然后再去读取，如果这2个操作不在同一个后端MiProxy的connection线程中，则其执行的先后顺序得不到保障，比如select读取的线程总是先返回，那么插入的<code>os_group</code>表的最新的id便是不正确的，从而导致了每次读取到的<code>os_group</code>的id都是0。</p>
 <p>到这里问题基本明朗了，是由于数据库代理引发的读写不同步的问题，之前同事就遇到过相关的配置问题，需要开启数据库的配置keep_session来保持会话信息。按理说这里我们也让DBA直接开启keep_session，这样select/insert就能在同一个连接里完成也就不会出现不同步的问题了。但是我的那位同事之前就遇到过开了keep_session之后，经过MiProxy提供的主从库有不同步的问题，所以这里我们并不能通过这个开关配置来最终解决问题。</p>
 <p>怎么办呢？我们提议让DBA不要再走MiProxy了，我们想直连后端mysql。DBA不建议这样做，说还是有负载均衡比较好，可是开了keep_session之后又有主从不同步的可能问题，两边都不是。最后的最后，还是我们这边决定先在代码层面对相关的查询位置进行事务处理，明确声明让MiProxy后端放到同一个connection里处理，我们在Service层都加了Transactional注解：<br>
-<img src="/images/mysql_transaction.service_transactional.png" alt></p>
+<img src="/images/mysql-transacion-with-proxy/service_transactional.png" alt></p>
 <blockquote>
 <p>我们在Service层都加了事务开启，这样确保了所有的SQL查询都在事务里，不会出现上述读写不同步的问题。可能到这里你会问所有的查询都开事务，MySQL读写的性能是不是会下降？那是肯定的，但是鉴于我们目前服务的阶段是处于快速上线验证的阶段，所以此次我们先临时fix一下，后面等业务量上来了如果确实性能跟不上，到时候再优化也不迟。</p>
 </blockquote>
@@ -497,6 +497,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/16/rust-understand-data-type/" rel="prev" title="循序渐进学点Rust——理解Rust数据类型">
+                循序渐进学点Rust——理解Rust数据类型 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -571,7 +575,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -582,7 +586,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -593,7 +597,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
