@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="denglitong.com/"/>
-  <updated>2019-11-16T16:02:23.808Z</updated>
+  <updated>2019-11-16T16:06:39.510Z</updated>
   <id>denglitong.com/</id>
   
   <generator uri="http://hexo.io/">Hexo</generator>
@@ -16,7 +16,7 @@
     <link href="denglitong.com/2019/11/16/rust-understand-data-type/"/>
     <id>denglitong.com/2019/11/16/rust-understand-data-type/</id>
     <published>2019-11-16T13:51:22.000Z</published>
-    <updated>2019-11-16T16:02:23.808Z</updated>
+    <updated>2019-11-16T16:06:39.510Z</updated>
     
     <summary type="html">
     
@@ -35,7 +35,7 @@
     <link href="denglitong.com/2019/11/16/mysql-transacion-with-proxy/"/>
     <id>denglitong.com/2019/11/16/mysql-transacion-with-proxy/</id>
     <published>2019-11-16T07:24:04.000Z</published>
-    <updated>2019-11-16T16:02:23.803Z</updated>
+    <updated>2019-11-16T16:06:39.505Z</updated>
     
     <content type="html"><![CDATA[<p>上篇博文里谈到，我最近在做的是组内的一个客服场景下的即时聊天框，前两周的周五赶马上线了。在测试环境测试一切正常，上线后…就翻车了…当时赶着上线，是在周五开完周会之后我和另一个组员一起上线的。那晚数据库还是临时找DBA给申请的，然后上线后我才把之前一条应该刷的SQL给刷了…所以赶着上线真的不是一件好事，在实际开发过程中要尽量避免，这次案例就引以为戒吧。</p><a id="more"></a><p>先来描述一下故障表现：我们上线之后，在用户向服务方发起在线咨询时后台会生成一个群聊记录 <code>os_group</code>，此时问题就出现了，前端调用接口获取到的群聊成员列表都是空的，用户发起群聊后却看不到群聊中的任何成员，数据异常，而且多次测试中还偶然有正常的。</p><p>到这里是我们始料未及的，在测试环境我们测试了一周都没有出现这个现象，此时我的第一反应，在确认接口返回的数据确实有问题后，先在脑海里过一遍，有没有可能是代码哪个环节没考虑到导致了这个问题。在确定没有直接能判断到可能的源头后，开始了排查。首先通过跳板机连接到线上的数据查看相关的数据是否插入正常，一查询发现获取群成员列表接口中的 <code>group_id: 0</code> 在数据库表中确实也是0，这基本就锁定了是我们连MySQL出了问题。异常的数据截图如下：<br><img src="/images/mysql-transacion-with-proxy/zero_id.png" alt><br>接着顺藤摸瓜，找到了代码中插入群聊的位置：<br><img src="/images/mysql-transacion-with-proxy/insert_group.png" alt></p><p>这里解释一下：75行之前把要创建群聊的前置条件都准备好，然后调用 <code>dao.insertSelective(groupDO)</code> 进行数据插入，初始化好群聊记录后，接着初始化群成员关系 <code>initGroupUsers()</code>，其中就用到了群聊Id <code>groupDO.getId()</code>。用过ORM框架的朋友们都知道，<code>insert</code> 方法都会将插入那行数据的 <code>id</code> 返回并设置到dao对象中，在此处也即 <code>groupDO</code> 中，然后后续初始化群成员关系的时候就会用到。问题也就是出现在这里，插入后的dao对象的id从效果上看并没有返回设置对应的id，导致初始化群成员关系的时候 <code>group_id</code> 都是0，从而导致了在前端页面数据异常，新建的群聊没有任何成员显示。</p><p>到这里问题基本就确定了，是MySQL连接的问题。一开始我们怀疑是临时申请的数据库哪个设置没配（因为在申请数据库的时候DBA跟我说还有一个操作是初始化），不过在和DBA拉群沟通的时候，DBA表示配置都是标准化的并没有遗漏。这时我的另一个组员，也就是这次一起上线的那位，说他之前就遇到过一次DBA申请的数据库在挂了MiProxy之后存在数据同步不一致的问题（MiProxy是MySQL前面的一层代理，是DBA用来做负载均衡的，如果直接连接MySQL后端的话是没有负载均衡的）。这时候我们继续跟DBA沟通，DBA让我们优先排查代码的问题，虽然之前MiProxy出现过主从同步不一致的问题，但遇到客户端不兼容的情况还是极少的。并让我们贴出了有问题的代码：<br><img src="/images/mysql-transacion-with-proxy/select_insert.png" alt></p><p>这段代码看起来没有问题，先insert然后再select最新的LAST_INSERT_ID()。这时候我们分别去验证数据库连接的问题：DBA验证MiProxy的问题，我们验证程序的问题，我们在线上把这个组件的数据库切换到staging环境后就好了，插入的id是能查到的不再为空了，同时DBA那边也用脚本验证了MiProxy的连接是没有问题的：<br><img src="/images/mysql-transacion-with-proxy/miproxy_validate.png" alt></p><p>到这里我们综合以上信息，脚本使用pymysql.connect()连接线上MiProxy，在同一个打开的connection里面insert/select都是没有问题的；而程序中使用了MyBatis Plus进行连接MiProxy就有问题，但是程序连接staging环境的库没有问题，同时线上库和staging库的区别在于一个是直连的、一个是使用MiProxy连接的；再结合多次测试中还是偶有能正确插入的，这个时候我们就想到可能是MySQL连接多线程的问题，使用单个连接没有问题，可以排除数据库配置、驱动版本的问题，而使用MiProxy连接后就不正常了，MiProxy提供代理能力，其后面屏蔽掉了可能有多个mysql connection线程，而程序代码中的select/inset有2次读写操作，需要先写入然后再去读取，如果这2个操作不在同一个后端MiProxy的connection线程中，则其执行的先后顺序得不到保障，比如select读取的线程总是先返回，那么插入的<code>os_group</code>表的最新的id便是不正确的，从而导致了每次读取到的<code>os_group</code>的id都是0。</p><p>到这里问题基本明朗了，是由于数据库代理引发的读写不同步的问题，之前同事就遇到过相关的配置问题，需要开启数据库的配置keep_session来保持会话信息。按理说这里我们也让DBA直接开启keep_session，这样select/insert就能在同一个连接里完成也就不会出现不同步的问题了。但是我的那位同事之前就遇到过开了keep_session之后，经过MiProxy提供的主从库有不同步的问题，所以这里我们并不能通过这个开关配置来最终解决问题。</p><p>怎么办呢？我们提议让DBA不要再走MiProxy了，我们想直连后端mysql。DBA不建议这样做，说还是有负载均衡比较好，可是开了keep_session之后又有主从不同步的可能问题，两边都不是。最后的最后，还是我们这边决定先在代码层面对相关的查询位置进行事务处理，明确声明让MiProxy后端放到同一个connection里处理，我们在Service层都加了Transactional注解：<br><img src="/images/mysql-transacion-with-proxy/service_transactional.png" alt></p><blockquote><p>我们在Service层都加了事务开启，这样确保了所有的SQL查询都在事务里，不会出现上述读写不同步的问题。可能到这里你会问所有的查询都开事务，MySQL读写的性能是不是会下降？那是肯定的，但是鉴于我们目前服务的阶段是处于快速上线验证的阶段，所以此次我们先临时fix一下，后面等业务量上来了如果确实性能跟不上，到时候再优化也不迟。</p></blockquote><pre><code>其实这里应该说是基础组件的问题，DBA提供的主从同步数据库有些场景功能满足不了，从而导致了当前的使用现状。  哎，基础设施不够完善啊，要想跑得快，还得底盘好，这话没毛病。</code></pre><p>临时fix掉后我们重新部署，上线后再验证就没有这个问题了，总算是好事多磨，而此时已经是周五晚上接近9点了。不过这次上线也是应该要上的，因为项目Owner在周报里已经写了上线日期就是今天，中间出现的这些小插曲，说明我们项目管理这次做得不够好。</p><p>不幸中的万幸是，此次我们组件上线是有灰度的，只有开启了组件可见的服务才能看到我们的入口，而这次上线我们只开启了自己的服务可见，对其他服务来说是无感知的，这也体现了要想持续快速交付，无缝的灰度上线策略是必不可少的。</p>]]></content>
     
@@ -58,7 +58,7 @@
     <link href="denglitong.com/2019/11/03/js-floating-point-precision/"/>
     <id>denglitong.com/2019/11/03/js-floating-point-precision/</id>
     <published>2019-11-03T13:10:17.000Z</published>
-    <updated>2019-11-16T16:02:23.797Z</updated>
+    <updated>2019-11-16T16:06:39.501Z</updated>
     
     <content type="html"><![CDATA[<p>最近在做一个IM相关应用的后端接口工作，在前后端联调的过程中出现了一个因JS浮点数精度引发的bug，记录如下。</p><a id="more"></a><p>先简单的介绍下我正在做的工作，我们在做的事情是基于公司云平台的产品探索，目前小组负责的探索方向有反馈系统、技术社区、产品点评、需求发布等，而我所在的小组是反馈系统里面衍生的在线支持。在线支持需要连接服务方和用户方，这里的服务方可以理解为淘宝卖家，不过在我们云平台上是技术能力提供方（比如FDS/HBase等），而反馈系统和在线支持，就充当起淘宝旺旺的功能，给商家和用户建立一个渠道，方便快速接入用户并解答疑问，同时还基于内部Jira系统将用户数据提交成需求单/缺陷单/建议单等，进一步提升技术迭代速度、提升用户使用体验、助力业务领跑。</p><p>介绍完背景后，让我们来看下具体出现bug的场景：</p><p>我们第一版实现的是网页群聊，是基于小米开源的<a href="https://dev.mi.com/console/appservice/mimc.html" target="_blank" rel="noopener">MIMC</a>来实现的。其中获取用户群聊未读消息条数的逻辑，是基于MIMC回调消息和前端在收到消息后向后端更新已读的sequence来做的。举个例子就是群聊G发送了a,b,c三条消息，用户U上次已读消息的sequence号是a的sequence号，所以此时a在群聊G有2条未读消息（消息b,c都不是用户U发的），当用户点进群聊的时候，前端取最后一条消息的sequence向后端接口更新用户的已读消息sequence。到了这里一切看起来都没有问题，但是联调过程中出现了群聊未读消息更新不成功，多次更新后依然还是会有一条未读消息的现象…</p><p>首先观察接口返回，在chrome浏览器里面F12 preview看接口返回数据，初看起来获取到的sequence返回正常，然后再去看k8s里面pod的日志，前端-&gt;后端-&gt;MIMC-&gt;MIMC回调，一切交互逻辑也是OK的。此时仔细观察了数据库里面更新回来的sequence序列号，和日志中发送给MIMC也是一致的，这个时候再去看接口中显示的群聊历史消息的sequence，此时发现了一个问题：群聊历史消息接口获取到的sequence序列号总是比收到MIMC回调的sequence小1，而在浏览器中观察接口的返回发现，Preview里面预览看到的结果，和Response里面的结果相差1！问题就在这，如下图所示：<br><img src="/images/js-floating-point-precision/number_1.png" alt><br><img src="/images/js-floating-point-precision/number_2.png" alt></p><p>注意看红色圈出来的部分相差1，这就是导致sequence更新不正常的元凶！</p><p>问题找到了，想到了可能是JS的精度问题，因为对JS了解的不多想着返回long型了也不是浮点数，怎么就不能精确表示了呢？看着也不像整型溢出，于是google了一下，了解到原来<a href="https://stackoverflow.com/questions/35727608/why-does-number-return-wrong-values-with-very-large-integers" target="_blank" rel="noopener">JS对所有的数字都使用64位浮点数表示</a>，而浮点数虽然能表示范围很大，但是在一些大整数的时候存在不能精确表示的问题，比如上图中差1的情况，具体原因是因为在64位浮点数表示里面，只有52位是真正用来表示<a href="https://baike.baidu.com/item/%E6%B5%AE%E7%82%B9%E6%95%B0/6162520" target="_blank" rel="noopener">尾数</a>部分的，而剩下的12位则用来表示指数和符号位，通过<a href="https://zh.wikipedia.org/wiki/%E6%B5%AE%E7%82%B9%E6%95%B0" target="_blank" rel="noopener">正规化</a>，我们可以使用53位来表示尾数（+符号位），因此，64位浮点数能表示的尾数最大值是：2^53-1（9007199254740991），而我们接口中返回的157180098717096001远超过9007199254740991，从而JS不能精确的表示，出现了精度问题。stackoverflow上面的解释如图：<br><img src="/images/js-floating-point-precision/number_3.png" alt></p><p>好了，到了这里终于是水落石出了，知道原因后要解决这个问题也很简单，那就是将返回字段的类型由long改为String，这样前端就能准确的获取到不会有精度问题，而且String类型也能满足我们的场景需要：群聊消息排序、更新已读sequence等。再补充一下，这里sequence使用long存储而不是String，是因为MIMC的SDK中返回的sequence就是long型的。</p><p>吃一堑，长一智。通过这个问题，我们深刻的理解了JS和前后端数据交互中可能存在的精度表达问题（准确来说是浮点数不能精确表示的问题，因为这里JS默认都使用了64位浮点数表示数字），针对这个问题NodeJs等也有自己的一个精确表示大整数数字的库来解决。作为后端开发的我们，平时多了解一下上下游的知识还是很有帮助的；再有一个就是，当时我遇到这个问题的时候，第一个感觉就是这个问题很有意思，激起了我的排查兴趣，虽然排查过程不算复杂，但是一个积极的心态对推进bug排查很有帮助的，用积极的心态去看待问题，把问题当做学习成长的机会，你将会活在当下。Coding in the moment. :-)</p>]]></content>
     
@@ -83,7 +83,7 @@
     <link href="denglitong.com/2019/08/31/first-post/"/>
     <id>denglitong.com/2019/08/31/first-post/</id>
     <published>2019-08-31T08:15:40.000Z</published>
-    <updated>2019-11-16T16:02:23.790Z</updated>
+    <updated>2019-11-16T16:06:39.495Z</updated>
     
     <content type="html"><![CDATA[<blockquote><p>在重写博客之际，感慨恒劳知逸、君子慎独、</p></blockquote>]]></content>
     
