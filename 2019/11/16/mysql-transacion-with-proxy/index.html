@@ -85,20 +85,20 @@
 <meta name="keywords" content="事务">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL事务引发的一次线上Bug">
-<meta property="og:url" content="http://denglitong.com/2019/11/16/mysql-transacion-with-proxy/index.html">
+<meta property="og:url" content="http://softengine.rs/2019/11/16/mysql-transacion-with-proxy/index.html">
 <meta property="og:site_name" content="梧桐树下">
 <meta property="og:description" content="上篇博文里谈到，我最近在做的是组内的一个客服场景下的即时聊天框，前两周的周五赶马上线了。在测试环境测试一切正常，上线后…就翻车了…当时赶着上线，是在周五开完周会之后我和另一个组员一起上线的。那晚数据库还是临时找DBA给申请的，然后上线后我才把之前一条应该刷的SQL给刷了…所以赶着上线真的不是一件好事，在实际开发过程中要尽量避免，这次案例就引以为戒吧。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://denglitong.com/images/mysql-transacion-with-proxy/zero_id.png">
-<meta property="og:image" content="http://denglitong.com/images/mysql-transacion-with-proxy/insert_group.png">
-<meta property="og:image" content="http://denglitong.com/images/mysql-transacion-with-proxy/select_insert.png">
-<meta property="og:image" content="http://denglitong.com/images/mysql-transacion-with-proxy/miproxy_validate.png">
-<meta property="og:image" content="http://denglitong.com/images/mysql-transacion-with-proxy/service_transactional.png">
-<meta property="og:updated_time" content="2019-11-17T04:50:34.526Z">
+<meta property="og:image" content="http://softengine.rs/images/mysql-transacion-with-proxy/zero_id.png">
+<meta property="og:image" content="http://softengine.rs/images/mysql-transacion-with-proxy/insert_group.png">
+<meta property="og:image" content="http://softengine.rs/images/mysql-transacion-with-proxy/select_insert.png">
+<meta property="og:image" content="http://softengine.rs/images/mysql-transacion-with-proxy/miproxy_validate.png">
+<meta property="og:image" content="http://softengine.rs/images/mysql-transacion-with-proxy/service_transactional.png">
+<meta property="og:updated_time" content="2019-11-17T04:51:17.643Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL事务引发的一次线上Bug">
 <meta name="twitter:description" content="上篇博文里谈到，我最近在做的是组内的一个客服场景下的即时聊天框，前两周的周五赶马上线了。在测试环境测试一切正常，上线后…就翻车了…当时赶着上线，是在周五开完周会之后我和另一个组员一起上线的。那晚数据库还是临时找DBA给申请的，然后上线后我才把之前一条应该刷的SQL给刷了…所以赶着上线真的不是一件好事，在实际开发过程中要尽量避免，这次案例就引以为戒吧。">
-<meta name="twitter:image" content="http://denglitong.com/images/mysql-transacion-with-proxy/zero_id.png">
+<meta name="twitter:image" content="http://softengine.rs/images/mysql-transacion-with-proxy/zero_id.png">
 
 
 
@@ -128,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://denglitong.com/2019/11/16/mysql-transacion-with-proxy/">
+  <link rel="canonical" href="http://softengine.rs/2019/11/16/mysql-transacion-with-proxy/">
 
 
 
@@ -303,7 +303,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://denglitong.com/2019/11/16/mysql-transacion-with-proxy/">
+    <link itemprop="mainEntityOfPage" href="http://softengine.rs/2019/11/16/mysql-transacion-with-proxy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
