@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="data_type,">
+  <meta name="keywords" content="循序渐进学Rust,">
 
 
 
@@ -81,18 +81,21 @@
 
 
 
-<meta name="description" content="为而不争">
-<meta name="keywords" content="data_type">
+<meta name="description" content="前段时间一个偶然的机会了解到了 Rust 这门语言，随机就被它的Slogon俘获了：A language empowering everyone to build reliable and efficient software. Rust能够在编译期间就确保内存安全、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的">
+<meta name="keywords" content="循序渐进学Rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="循序渐进学点Rust——理解Rust数据类型">
-<meta property="og:url" content="http://softengine.rs/2019/11/16/rust-understand-data-type/index.html">
+<meta property="og:title" content="Rust入门简介">
+<meta property="og:url" content="http://denglitong.com/2019/11/16/hello-rust/index.html">
 <meta property="og:site_name" content="梧桐树下">
-<meta property="og:description" content="为而不争">
+<meta property="og:description" content="前段时间一个偶然的机会了解到了 Rust 这门语言，随机就被它的Slogon俘获了：A language empowering everyone to build reliable and efficient software. Rust能够在编译期间就确保内存安全、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-16T16:14:06.169Z">
+<meta property="og:image" content="http://denglitong.com/images/hello-rust/why-choose-rust.png">
+<meta property="og:image" content="http://denglitong.com/images/hello-rust/rust-app-develop.png">
+<meta property="og:updated_time" content="2019-11-17T04:50:34.513Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="循序渐进学点Rust——理解Rust数据类型">
-<meta name="twitter:description" content="为而不争">
+<meta name="twitter:title" content="Rust入门简介">
+<meta name="twitter:description" content="前段时间一个偶然的机会了解到了 Rust 这门语言，随机就被它的Slogon俘获了：A language empowering everyone to build reliable and efficient software. Rust能够在编译期间就确保内存安全、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的">
+<meta name="twitter:image" content="http://denglitong.com/images/hello-rust/why-choose-rust.png">
 
 
 
@@ -122,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://softengine.rs/2019/11/16/rust-understand-data-type/">
+  <link rel="canonical" href="http://denglitong.com/2019/11/16/hello-rust/">
 
 
 
 
 
-  <title>循序渐进学点Rust——理解Rust数据类型 | 梧桐树下</title>
+  <title>Rust入门简介 | 梧桐树下</title>
   
 
 
@@ -297,7 +300,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://softengine.rs/2019/11/16/rust-understand-data-type/">
+    <link itemprop="mainEntityOfPage" href="http://denglitong.com/2019/11/16/hello-rust/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
@@ -314,7 +317,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">循序渐进学点Rust——理解Rust数据类型</h1>
+          <h1 class="post-title" itemprop="name headline">Rust入门简介</h1>
         
 
         <div class="post-meta">
@@ -366,7 +369,7 @@
 
           
           
-             <span id="/2019/11/16/rust-understand-data-type/" class="leancloud_visitors" data-flag-title="循序渐进学点Rust——理解Rust数据类型">
+             <span id="/2019/11/16/hello-rust/" class="leancloud_visitors" data-flag-title="Rust入门简介">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -391,7 +394,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0
+                  1.8k
                 </span>
               
 
@@ -407,7 +410,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1
+                  6
                 </span>
               
             </div>
@@ -428,7 +431,42 @@
       
 
       
-        
+        <p>前段时间一个偶然的机会了解到了 <a href="https://www.rust-lang.org/" target="_blank" rel="noopener">Rust</a> 这门语言，随机就被它的Slogon俘获了：<strong>A language empowering everyone to build reliable and efficient software</strong>. Rust能够在编译期间就确保<strong>内存安全</strong>、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的工程学用起来体验很好。随着了解的越多，被种草的程度就越深，虽然现在学习到的Rust知识还很少（Rust的中文资料相对较少），但基本确定了会一直学习下去的，希望在未来Rust的许多设计思想可以普及开来，比如<strong>内存安全</strong>的思想、软件工程学等等。</p>
+<a id="more"></a>
+<pre><code>内存安全的意思，可以简单理解为编译通过的程序里不会在运行时出现空指针/悬垂指针。  
+我相信写过C/C++/JAVA代码的同学都有遇到过空指针异常的，而很多软件漏洞都是内存泄露/空指针造成的，
+如果你有过在某个深夜排查空指针异常Bug的经历，你就会明白内存安全是多么的具有吸引力！  
+想象一下你很有自信发布代码，因为你知道不会出现内存安全问题，是不是很期待？  
+（特别是当你涉及交付产品给终端用户的时候就更能体会到这种感觉了，比如一些安全敏感的应用，如金融、医疗等等）
+</code></pre>
+<p>下面，就请跟随我的脚步，来简单的了解一下Rust这门语言，看看它和其他已有的语言和哪些不同，我们可以从这些差异点中进行学习借鉴。</p>
+<h3 id="选择rust的三大理由"><a class="header-anchor" href="#选择rust的三大理由"></a>选择Rust的三大理由</h3>
+<p>首先来看到Rust官网首页列出的选择Rust的三大理由：<br>
+<img src="/images/hello-rust/why-choose-rust.png" alt></p>
+<blockquote>
+<p><strong>高性能</strong>：Rust是一个没有GC的语言，并且几乎没有运行时开销，可以胜任对性能要求特别高的场景，不会因为GC而导致程序的“暂停”。同时Rust依靠独特的Ownership和Lifetimes的设计，使得其内存利用率极高，不会像JAVA程序那样把所有的内存吃光，相反，使用Rust编写的程序在保持高性能的同时还能做到内存资源占用少，在节省服务器资源的同时可以让我们更有信心应对更严酷的场景。</p>
+</blockquote>
+<blockquote>
+<p><strong>可靠性</strong>：Rust可靠性前面有提到一点，就是内存安全，其实Rust还可以保证线程安全，在进行多线程进行并发/异步的同时，不会出现Data Racing的问题，而Data Racing是其他编程语言中多线程并发绕不过的问题。而这些特性，都得益于Rust丰富的Type系统和Ownership机制。</p>
+</blockquote>
+<blockquote>
+<p><strong>生产力</strong>：上手Rust给我的体验是，这是一门工程学设计良好的语言。集构建、测试、文档、发布于一体的开发工具<code>Cargo</code>和<code>crates.io</code>，更简约友好的命名规范，能减少大量样板代码的宏以及库函数。举2个例子来感受一下，函数声明，Go中使用<code>func(){}</code>，而Rust则更进一步使用<code>fn(){}</code>，也许你会觉得这只是几个字符的差别，但远远不止，它体现出Rust精简的设计思想。比如输出语句，Go中需要先导入<code>import fmt</code>然后再使用<code>fmt.Println()</code>，而Rust强大的宏更进一步无需导入任何包直接使用<code>println!()</code>就可以打印到控制台。诸如此类的还有许多，它体现出的是在开发过程中提升开发人员的效率，工程学友好，Rust刷新了我对这个词的理解。</p>
+</blockquote>
+<h3 id="rust的发展历史和生态现状"><a class="header-anchor" href="#rust的发展历史和生态现状"></a>Rust的发展历史和生态现状</h3>
+<p>Rust最开始是<code>2006年</code>Graydon Hoare设计的私人项目，其后在<code>2009年</code>Mozilla（Firefox的母公司）决定赞助这个项目，并在<code>2010年</code>首次对外公开。同年，Rust的编译器<code>rustc</code>的源代码由OCaml语言转移到用Rust语言（进行bootstrapping自举），并于<code>2011年</code>实际完成，这个可自我编译的编译器采用了LLVM作为它的后端。<code>rustc</code>的第一个公开版本发布是在<code>2012年</code>1月，Rust在<code>2015年</code>5月15日发布了它的第一个稳定版本<code>Rust 1.0</code>。截止到文本撰写时，Rust发布了它的最新的版本<code>Rust 1.39.0</code>，期待已久的<code>sync/await</code>特性终于稳定了。</p>
+<blockquote>
+<p>其中Rust在Mozilla被用来了整个重构重写了FireFox的核心组件，足以证明Rust能够胜任大型软件的开发重构工作。</p>
+</blockquote>
+<p>Rust的发展方面，与之可以比对的是时下流行的Go语言。Rust和Go几乎是同时出来的语言，都是在2009年左右。Go语言伴随着Docker/Kebunetes容器编排、微服务技术潮流的兴起，可以说是增长势头迅猛。反观Rust，每一个特性设计都讨论好久，前期的版本变化太大，很多设计都推倒重来（比如是否要有GC），直到1.0版本出来后才趋于稳定。这在一定程度上延缓了Rust的普及，但也因此造就了Rust独特的设计理论、良好的社区文化以及友好的工程学体验。虽然没有Google这个好爹的背书，但是Rust无运行时开销的高性能和无畏安全的线程并发能力、工程学效率，我相信会越来越受到欢迎的。</p>
+<p>下面引用Rust的<a href="https://www.cnbeta.com/articles/tech/900197.htm" target="_blank" rel="noopener">一则报道</a>加以补充：</p>
+<blockquote>
+<p>目前，Rust发展势头正劲。此前，<a href="https://www.oschina.net/news/108368/microsoft-is-exploring-to-use-rust-as-more-secure-code" target="_blank" rel="noopener">微软安全响应中心探索采用 Rust 的消息</a>引发大量关注，在<a href="https://www.oschina.net/news/105808/2019-stackoverflow-developer-survey-results" target="_blank" rel="noopener">连续四年蝉联“最受开发者喜爱的编程语言”</a>后，Rust 可能已经从“想要学习的语言”逐渐转变为许多开发者“正在学习的语言”。自从四年前首次发布稳定版以来，它已经得到了广泛的采用，谷歌，微软和 Mozilla 等公司都在使用 Rust。现在，<a href="https://aws.amazon.com/cn/blogs/china/aws-sponsorship-of-the-rust-project/" target="_blank" rel="noopener">AWS 也向 Rust 伸出了橄榄枝</a>。</p>
+</blockquote>
+<p>至于Rust的生态方面，使用Rust几乎能做任何事情：可以编写底层应用操作系统，可以进行Web开发、嵌入式开发，还可以利用WebAssembly将Rust代码运行在浏览器中。来一张官网的图感受一下：<br>
+<img src="/images/hello-rust/rust-app-develop.png" alt><br>
+关于Rust 2018年的Road Map可以参见：<a href="https://blog.rust-lang.org/2018/03/12/roadmap.html%E3%80%82" target="_blank" rel="noopener">https://blog.rust-lang.org/2018/03/12/roadmap.html。</a> 不过Rust现在的一些基础库还不够完善，还需要更多的开发者加入添砖加瓦。</p>
+<p>未来的互联网，随着5G的普及，注重安全和高性能是必然趋势，而Rust正是这样的一门可以赋予每个人无畏的构建安全高性能的语言。借助Rust，我相信可以摆脱系统对架构集群的过度依赖，构建出安全、高性能、设计简约的轻型系统。下一篇文章，我将继续带领大家，来理解Rust中的数据类型。</p>
+
       
     </div>
     
@@ -445,7 +483,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/data-type/" rel="tag"># data_type</a>
+            <a href="/tags/循序渐进学Rust/" rel="tag"># 循序渐进学Rust</a>
           
         </div>
       
@@ -523,8 +561,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -610,6 +657,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择rust的三大理由"><span class="nav-number">1.</span> <span class="nav-text">选择Rust的三大理由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rust的发展历史和生态现状"><span class="nav-number">2.</span> <span class="nav-text">Rust的发展历史和生态现状</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -637,7 +700,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">3.4k</span>
+    <span title="Site words total count">5.2k</span>
   
 </div>
 
