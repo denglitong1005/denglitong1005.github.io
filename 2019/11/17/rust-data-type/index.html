@@ -81,21 +81,20 @@
 
 
 
-<meta name="description" content="前段时间一个偶然的机会了解到了 Rust 这门语言，随机就被它的Slogon俘获了：A language empowering everyone to build reliable and efficient software. Rust能够在编译期间就确保内存安全、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的">
+<meta name="description" content="数据类型是编程语言的基石。数据类型之于编程语言，就像26个字母之于单词、偏旁部首之于汉字，是构成程序语句最基础的元素，是我们编写statement/expression的literal，从本文开始我会涵盖Rust中常用的数据类型介绍和简单使用。">
 <meta name="keywords" content="Hands-On Data Structures and Algorithms with Rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Rust入门简介">
-<meta property="og:url" content="http://denglitong.com/2019/11/16/hello-rust/index.html">
+<meta property="og:title" content="理解Rust中的类型设计 - Objects and behavior">
+<meta property="og:url" content="http://denglitong.com/2019/11/17/rust-data-type/index.html">
 <meta property="og:site_name" content="梧桐树下">
-<meta property="og:description" content="前段时间一个偶然的机会了解到了 Rust 这门语言，随机就被它的Slogon俘获了：A language empowering everyone to build reliable and efficient software. Rust能够在编译期间就确保内存安全、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的">
+<meta property="og:description" content="数据类型是编程语言的基石。数据类型之于编程语言，就像26个字母之于单词、偏旁部首之于汉字，是构成程序语句最基础的元素，是我们编写statement/expression的literal，从本文开始我会涵盖Rust中常用的数据类型介绍和简单使用。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://denglitong.com/images/hello-rust/why-choose-rust.png">
-<meta property="og:image" content="http://denglitong.com/images/hello-rust/rust-app-develop.png">
-<meta property="og:updated_time" content="2019-11-23T04:13:51.110Z">
+<meta property="og:image" content="http://denglitong.com/images/rust-logo-64x64-blk.png">
+<meta property="og:updated_time" content="2019-11-23T04:13:51.129Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rust入门简介">
-<meta name="twitter:description" content="前段时间一个偶然的机会了解到了 Rust 这门语言，随机就被它的Slogon俘获了：A language empowering everyone to build reliable and efficient software. Rust能够在编译期间就确保内存安全、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的">
-<meta name="twitter:image" content="http://denglitong.com/images/hello-rust/why-choose-rust.png">
+<meta name="twitter:title" content="理解Rust中的类型设计 - Objects and behavior">
+<meta name="twitter:description" content="数据类型是编程语言的基石。数据类型之于编程语言，就像26个字母之于单词、偏旁部首之于汉字，是构成程序语句最基础的元素，是我们编写statement/expression的literal，从本文开始我会涵盖Rust中常用的数据类型介绍和简单使用。">
+<meta name="twitter:image" content="http://denglitong.com/images/rust-logo-64x64-blk.png">
 
 
 
@@ -125,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://denglitong.com/2019/11/16/hello-rust/">
+  <link rel="canonical" href="http://denglitong.com/2019/11/17/rust-data-type/">
 
 
 
 
 
-  <title>Rust入门简介 | 梧桐树下</title>
+  <title>理解Rust中的类型设计 - Objects and behavior | 梧桐树下</title>
   
 
 
@@ -300,7 +299,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://denglitong.com/2019/11/16/hello-rust/">
+    <link itemprop="mainEntityOfPage" href="http://denglitong.com/2019/11/17/rust-data-type/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
@@ -317,7 +316,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Rust入门简介</h1>
+          <h1 class="post-title" itemprop="name headline">理解Rust中的类型设计 - Objects and behavior</h1>
         
 
         <div class="post-meta">
@@ -329,8 +328,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-16T21:51:22+08:00">
-                2019-11-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-17T19:35:43+08:00">
+                2019-11-17
               </time>
             
 
@@ -369,7 +368,7 @@
 
           
           
-             <span id="/2019/11/16/hello-rust/" class="leancloud_visitors" data-flag-title="Rust入门简介">
+             <span id="/2019/11/17/rust-data-type/" class="leancloud_visitors" data-flag-title="理解Rust中的类型设计 - Objects and behavior">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -394,7 +393,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.9k
+                  2.1k
                 </span>
               
 
@@ -410,7 +409,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6
+                  8
                 </span>
               
             </div>
@@ -431,55 +430,30 @@
       
 
       
-        <p>前段时间一个偶然的机会了解到了 <a href="https://www.rust-lang.org/" target="_blank" rel="noopener">Rust</a> 这门语言，随机就被它的Slogon俘获了：<strong>A language empowering everyone to build reliable and efficient software</strong>. Rust能够在编译期间就确保<strong>内存安全</strong>、提供和C/C++同级别的高性能、还有并发、异步、函数编程、强大的宏等等特性，并且很重要的一点是整个Rust社区很友好，而且Rust的工程学用起来体验很好。随着了解的越多，被种草的程度就越深，虽然现在学习到的Rust知识还很少（Rust的中文资料相对较少），但基本确定了会一直学习下去的，希望在未来Rust的许多设计思想可以普及开来，比如<strong>内存安全</strong>的思想、软件工程学等等。</p>
+        <p>数据类型是编程语言的基石。数据类型之于编程语言，就像26个字母之于单词、偏旁部首之于汉字，是构成程序语句最基础的元素，是我们编写<code>statement</code>/<code>expression</code>的<code>literal</code>，从本文开始我会涵盖Rust中常用的数据类型介绍和简单使用。</p>
+<div style="text-align: center"><img src="/images/rust-logo-64x64-blk.png"></div>
 <a id="more"></a>
-<pre><code>内存安全的意思，可以简单理解为编译通过的程序里不会在运行时出现空指针/悬垂指针。  
-我相信写过C/C++/JAVA代码的同学都有遇到过空指针异常的，而很多软件漏洞都是内存泄露/空指针造成的，
-如果你有过在某个深夜排查空指针异常Bug的经历，你就会明白内存安全是多么的具有吸引力！  
-想象一下你很有自信发布代码，因为你知道不会出现内存安全问题，是不是很期待？  
-（特别是当你涉及交付产品给终端用户的时候就更能体会到这种感觉了，比如一些安全敏感的应用，如金融、医疗等等）
-</code></pre>
-<p>下面，就请跟随我的脚步，来简单的了解一下Rust这门语言，看看它和其他已有的语言和哪些不同，我们可以从这些差异点中进行学习借鉴。</p>
-<h3 id="选择rust的三大理由"><a class="header-anchor" href="#选择rust的三大理由"></a>选择Rust的三大理由</h3>
-<p>首先来看到Rust官网首页列出的选择Rust的三大理由：<br>
-<img src="/images/hello-rust/why-choose-rust.png" alt></p>
+<p>当今的许多编程语言都有多重编程范式设计，又称<code>多范式编程语言</code>（Multi-paradigm programming language），例如Java/Golang，但他们还停留在聚焦于对象继承原则，这也就是说它们会有<code>classs</code>、<code>interfaces</code>、<code>class inheritance</code>这些，而这些没有一个出现在Rust中，这也是造成很多人觉得Rust的学习曲线很陡的原因之一。Rust作为一个多重范式设计的语言，有很多函数式的概念和范式，而这些会使得应用传统的对象继承模式变得困难。与通过类<code>classs</code>和接口<code>interfaces</code>来组织代码不同的是，Rust使用<code>struct</code>和<code>trait(特质)</code>。下面就让我们开始探索，Rust中的独特设计究竟是怎样的一番体验，以及这些设计如何影响我们使用Rust中的数据结构来进行算法编程。</p>
+<h3 id="对象和行为"><a class="header-anchor" href="#对象和行为"></a>对象和行为</h3>
+<p>首当其冲的便是传统OOP语言中的类和继承机制。如果你写过OOP那么你对下面的这段代码将了如指掌：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Door</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> bool is_open = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.is_open = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而在Rust语言中，这个模式定义要求所有<code>Door</code>的实例都拥有可变性，而可变性就涉及显示加锁以保证线程安全。与此同时，如果有新增一个类<code>GlassDoor</code>，这时如果没有类的继承机制那么就会产生重复的<code>is_open</code>定义，而重复代码将使得维护变得困难。</p>
 <blockquote>
-<p><strong>高性能</strong>：Rust是一个没有GC的语言，并且几乎没有运行时开销，可以胜任对性能要求特别高的场景，不会因为GC而导致程序的“暂停”。同时Rust依靠独特的Ownership和Lifetimes的设计，使得其内存利用率极高，不会像JAVA程序那样把所有的内存吃光，相反，使用Rust编写的程序在保持高性能的同时还能做到内存资源占用少，在节省服务器资源的同时可以让我们更有信心应对更严酷的场景。</p>
+<p>可变性<code>mutability</code>，在此处是Door实例对其内部数据is_open做出修改的能力。在Rust中所有变量默认都是不可变的，参见：<a href="https://rust-lang.github.io/rfcs/0001-private-fields.html" target="_blank" rel="noopener">rust-lang/rfcs#1</a></p>
 </blockquote>
+<p>Rust建议使用<code>trait</code>实现共享的行为，Rust中的<code>trait</code>，中文译作特质，很像OOP语言中的虚类（<code>trait</code>的方法可以有默认实现，虚类也支持默认实现），Rust中的<code>struct</code>可以实现多个<code>trait</code>，下面是一个示例：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Door</span></span> &#123;</span><br><span class="line">    is_open: <span class="built_in">bool</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Door &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(is_open: <span class="built_in">bool</span>) -&gt; Door &#123;</span><br><span class="line">        Door &#123; is_open: is_open &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Openable</span></span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">open</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Openable <span class="keyword">for</span> Door &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">open</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.is_open = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>可靠性</strong>：Rust可靠性前面有提到一点，就是内存安全，其实Rust还可以保证线程安全，在进行多线程进行并发/异步的同时，不会出现Data Racing的问题，而Data Racing是其他编程语言中多线程并发绕不过的问题。而这些特性，都得益于Rust丰富的Type系统和Ownership机制。</p>
+<p>使用类比，struct Door{} 的定义可以看成是OOP编程语言中的class，而 impl Door{} 块则类比class中的方法实现，trait Openable{} 则类比interface的定义，impl Openable for Door{} 在Rust中是为某个struct实现某个trait的功能，可类比OOP中实现一个interface。对比是为了参照理解，但绝不是只是换个名词，它体现的是Rust的设计思想：数据结构定义和行为实现分离，行为实现可插拔。</p>
 </blockquote>
-<blockquote>
-<p><strong>生产力</strong>：上手Rust给我的体验是，这是一门工程学设计良好的语言。集构建、测试、文档、发布于一体的开发工具<code>Cargo</code>和<code>crates.io</code>，更简约友好的命名规范，能减少大量样板代码的宏以及库函数。举2个例子来感受一下，函数声明，Go中使用<code>func(){}</code>，而Rust则更进一步使用<code>fn(){}</code>，也许你会觉得这只是几个字符的差别，但远远不止，它体现出Rust精简的设计思想。比如输出语句，Go中需要先导入<code>import fmt</code>然后再使用<code>fmt.Println()</code>，而Rust强大的宏更进一步无需导入任何包直接使用<code>println!()</code>就可以打印到控制台。诸如此类的还有许多，它体现出的是在开发过程中提升开发人员的效率，工程学友好，Rust刷新了我对这个词的理解。</p>
-</blockquote>
-<h3 id="rust的发展历史和生态现状"><a class="header-anchor" href="#rust的发展历史和生态现状"></a>Rust的发展历史和生态现状</h3>
-<p>Rust最开始是<code>2006年</code>Graydon Hoare设计的私人项目，其后在<code>2009年</code>Mozilla（Firefox的母公司）决定赞助这个项目，并在<code>2010年</code>首次对外公开。同年，Rust的编译器<code>rustc</code>的源代码由OCaml语言转移到用Rust语言（进行bootstrapping自举），并于<code>2011年</code>实际完成，这个可自我编译的编译器采用了LLVM作为它的后端。<code>rustc</code>的第一个公开版本发布是在<code>2012年</code>1月，Rust在<code>2015年5月15日</code>发布了它的第一个稳定版本<code>Rust 1.0</code>。截止到文本撰写时，Rust发布了它的最新的版本<code>Rust 1.39.0</code>，期待已久的<code>async/await</code>特性终于稳定了。</p>
-<blockquote>
-<p>其中Rust在Mozilla被用来了整个重构重写了FireFox的核心组件，足以证明Rust能够胜任大型软件的开发重构工作。</p>
-</blockquote>
-<p>Rust的发展方面，与之可以比对的是时下流行的Go语言。Rust和Go几乎是同时出来的语言，都是在2009年左右。Go语言伴随着Docker/Keburnetes容器编排、微服务技术潮流的兴起，可以说是增长势头迅猛。反观Rust，每一个特性设计都讨论好久，前期的版本变化太大，很多设计都推倒重来（比如是否要有GC），直到1.0版本出来后才趋于稳定（值得注意的是<code>Golang 1.0</code>的版本发布时间是<code>2012年3月</code>，Rust与之相比晚了3年多才发布1.0版本）。这在一定程度上延缓了Rust的普及，但也因此造就了Rust独特的设计理论、良好的社区文化以及友好的工程学体验。虽然没有Google这个好爹的背书，但是Rust无运行时开销的高性能和无畏安全的线程并发能力、工程学效率，我相信会越来越受到欢迎的。</p>
-<p>下面引用Rust的<a href="https://www.cnbeta.com/articles/tech/900197.htm" target="_blank" rel="noopener">一则报道</a>加以补充：</p>
-<blockquote>
-<p>目前，Rust发展势头正劲。此前，<a href="https://www.oschina.net/news/108368/microsoft-is-exploring-to-use-rust-as-more-secure-code" target="_blank" rel="noopener">微软安全响应中心探索采用 Rust 的消息</a>引发大量关注，在<a href="https://www.oschina.net/news/105808/2019-stackoverflow-developer-survey-results" target="_blank" rel="noopener">连续四年蝉联“最受开发者喜爱的编程语言”</a>后，Rust 可能已经从“想要学习的语言”逐渐转变为许多开发者“正在学习的语言”。自从四年前首次发布稳定版以来，它已经得到了广泛的采用，谷歌，微软和 Mozilla 等公司都在使用 Rust。现在，<a href="https://aws.amazon.com/cn/blogs/china/aws-sponsorship-of-the-rust-project/" target="_blank" rel="noopener">AWS 也向 Rust 伸出了橄榄枝</a>。</p>
-</blockquote>
-<p>至于Rust的生态方面，使用Rust几乎能做任何事情：可以编写底层应用操作系统，可以进行Web开发、嵌入式开发，还可以利用WebAssembly将Rust代码运行在浏览器中。来一张官网的图感受一下：<br>
-<img src="/images/hello-rust/rust-app-develop.png" alt><br>
-关于Rust 2018年的Road Map可以参见：<a href="https://blog.rust-lang.org/2018/03/12/roadmap.html%E3%80%82" target="_blank" rel="noopener">https://blog.rust-lang.org/2018/03/12/roadmap.html。</a> 不过Rust现在的一些基础库还不够完善，还需要更多的开发者加入添砖加瓦。</p>
-<p>未来的互联网，随着5G的普及，注重安全和高性能是必然趋势，而Rust正是这样的一门可以赋予每个人无畏的构建安全高性能的语言。借助Rust，我相信可以摆脱系统对架构集群的过度依赖，构建出安全、高性能、设计简约的轻型系统。下一篇文章，我将继续带领大家，来理解Rust中的数据类型。</p>
-<p>最后，附上学习Rust的资源链接：</p>
-<ul>
-<li><a href="https://www.rust-lang.org/" target="_blank" rel="noopener">Rust Programming Language</a></li>
-<li><a href="https://users.rust-lang.org/" target="_blank" rel="noopener">The Rust Programming Language Forum</a></li>
-<li><a href="https://twitter.com/rustlang" target="_blank" rel="noopener">Rust Language (@rustlang) / Twitter</a></li>
-<li><a href="https://wiki.mozilla.org/Rust" target="_blank" rel="noopener">Rust - MozillaWiki</a></li>
-<li><a href="https://blog.rust-lang.org/" target="_blank" rel="noopener">The Rust Programming Language Blog</a></li>
-<li><a href="https://rust-lang.github.io/rfcs/" target="_blank" rel="noopener">Introduction - The Rust RFC Book</a></li>
-<li><a href="https://this-week-in-rust.org/" target="_blank" rel="noopener">This Week in Rust</a></li>
-<li><a href="http://smallcultfollowing.com/babysteps/" target="_blank" rel="noopener">Baby Steps - Nicholas D. Matsakis</a></li>
-<li><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018" target="_blank" rel="noopener">Rust Playground</a></li>
-<li><a href="https://rust.cc/" target="_blank" rel="noopener">Rust语言中文社区-首页</a></li>
-<li><a href="https://rustforce.net/" target="_blank" rel="noopener">Rust Force - 关于 Rust 编程语言的一切</a></li>
-</ul>
+<p>传统OOP语言中的类，把数据成员和方法实现糅杂在一起，虽然C++可以用头部文件<code>.h</code>把定义和实现区分开但并不是强制性的。而Rust强制把这两者区分开了，做法就是通过声明一个<code>struct</code>，以及一个<code>impl</code>块来承载<code>struct</code>中具体拥有哪些方法和具体实现。与此同时Rust可以为<code>struct</code>实现多个<code>trait</code>，这使得<code>trait</code>的导入、共享、复用变得简单。利用<code>trait</code>和<code>generics</code>泛型可以为已有<code>struct</code>真正无侵入的增加新<code>trait</code>的实现，下面就来展示一下。</p>
+<p>假设我们已经有了一个分页的<code>struct</code> MyPaginate用来保持当前页数，以及对应的<code>trait</code>用来设置当前的页数和每页的条数，它们像下面这样：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Page</span></span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set_page</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, p: <span class="built_in">i32</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">PerPage</span></span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set_perpage</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, num: <span class="built_in">i32</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MyPaginate</span></span> &#123;</span><br><span class="line">    page: <span class="built_in">i32</span>,</span><br><span class="line">    per_page: <span class="built_in">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> MyPaginate &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">member_method</span></span>(&amp;<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"This is member method for struct which no relevant to trait."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> Page <span class="keyword">for</span> MyPaginate &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set_page</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, p: <span class="built_in">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.page = p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> PerPage <span class="keyword">for</span> MyPaginate &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set_perpage</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, per_page: <span class="built_in">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.per_page = per_page;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span></span><br><span class="line"><span class="keyword">mod</span> tests &#123;</span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">test_trait_not_inherit</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> my_paginate = MyPaginate &#123;</span><br><span class="line">            page: <span class="number">1</span>,</span><br><span class="line">            per_page: <span class="number">10</span>,</span><br><span class="line">        &#125;;</span><br><span class="line">        my_paginate.set_page(<span class="number">2</span>);</span><br><span class="line">        my_paginate.set_perpage(<span class="number">100</span>);</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"my_paginate: &#123;:?&#125;"</span>, my_paginate);</span><br><span class="line">        <span class="comment">// output: my_paginate: MyPaginate &#123; page: 2, per_page: 100 &#125;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面定义了2个<code>trait</code>并为<code>struct</code>实现了这2个<code>trait</code>，到这里还显示不出Rust中的<code>trait</code>有什么特别的地方，让我们接着往下看。假如这时我们需要引入一个新的<code>trait</code>并增加一个方法<code>set_skip_page</code>，希望能够设置可以跳过的页数，这个时候如何添加到代码中去呢？如果是在C<ins>中，接口是由<code>抽象类</code>来实现，而由于C</ins>只能单继承，如果要引入新的方法实现，那么我们势必需要在现有的抽象类/子类中新增方法实现，这就会侵入现有代码。而在Java中，接口通过<code>interface</code>来实现，类可以继承多个<code>interface</code>，如果我们要新增一个方法实现，我们可以引入新的<code>interface</code>，这样可以不改动已有的<code>interface</code>代码，但至少还得修改类定义新增一个 <code>extends interface</code>的声明。而在Rust中，上述2种情况都不需要修改！这得益于Rust中的<code>generics</code>和<code>trait</code>，给代码提供了强大的灵活性和表达性，下面看代码示例：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明了一个新`trait`</span></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Paginate</span></span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new_method</span></span>(&amp;<span class="keyword">self</span>, page: <span class="built_in">i32</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为MyPaginate实现新trait</span></span><br><span class="line"><span class="keyword">impl</span> Paginate <span class="keyword">for</span> MyPaginate &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new_method</span></span>(&amp;<span class="keyword">self</span>, page: <span class="built_in">i32</span>) &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"In new_method, page: &#123;&#125;"</span>, page);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span></span><br><span class="line"><span class="keyword">mod</span> tests &#123;</span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">test_new_trait</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> my_paginate = MyPaginate &#123;</span><br><span class="line">            page: <span class="number">1</span>,</span><br><span class="line">            per_page: <span class="number">10</span>,</span><br><span class="line">        &#125;;</span><br><span class="line">        my_paginate.member_method();</span><br><span class="line">        my_paginate.new_method(<span class="number">10</span>);</span><br><span class="line">        <span class="comment">// output: In new_method, page: 10</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子是新增一个独立的<code>trait</code>实现，可以看到Rust可以在真正零侵入原<code>struct</code>和<code>trait</code>的情况下，为<code>struct</code>实现了新<code>trait</code>的方法！这是不是比C++/Java更灵活呢？而且，结合<code>trait inherience</code>Rust还能实现更强大的功能。下面来看一个需求，假设你的需求是新增一个新<code>trait</code>实现，但是实现这个<code>trait</code>的前提是你需要先实现<code>Page</code>，但是你又希望在设计上将两者区分开而不是糅杂在一起，这个时候<code>trait inherience</code>就派上用场了，看例子：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.第一种语法为MyPaginate声明实现Paginate trait，Paginate需要依赖于Page</span></span><br><span class="line"><span class="keyword">impl</span> Paginate <span class="keyword">for</span> MyPaginate</span><br><span class="line"><span class="comment">// where限定符声明了该实现针对的MyPaginate类型需要先实现了Page trait，</span></span><br><span class="line"><span class="comment">// 这是因为新增的方法实现用到了Page trait中的set_page函数</span></span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    MyPaginate: Page,</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set_skip_page</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, page: <span class="built_in">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.set_page(page + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span></span><br><span class="line"><span class="keyword">mod</span> tests &#123;</span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">test_trait_inherit</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> my_paginate = MyPaginate &#123;</span><br><span class="line">            page: <span class="number">1</span>,</span><br><span class="line">            per_page: <span class="number">10</span>,</span><br><span class="line">        &#125;;</span><br><span class="line">        my_paginate.set_page(<span class="number">1</span>);</span><br><span class="line">        my_paginate.set_perpage(<span class="number">100</span>);</span><br><span class="line">        my_paginate.set_skip_page(<span class="number">12</span>);</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"my_paginate: &#123;:?&#125;"</span>, my_paginate);</span><br><span class="line">        <span class="comment">// output: my_paginate: MyPaginate &#123; page: 13, per_page: 100 &#125;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上是针对单个具体类型MyPaginate为其实现了Paginate实现，</span></span><br><span class="line"><span class="comment">// 而Rust的泛型提供了更强大便捷的语法，可以为所有符合要求的类型实现Paginate，请看：</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.声明trait的时候使用继承语法，表示实现PaginateInherit trait之前需要先实现Page trait</span></span><br><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">PaginateInherit</span></span>: Page &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set_skip_page_inherit</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, page: <span class="built_in">i32</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 为实现了Page的类型T实现PaginateInherit，也就是为目标类型实现PaginateInherit trait而已</span></span><br><span class="line"><span class="keyword">impl</span>&lt;T: Page&gt; PaginateInherit <span class="keyword">for</span> T &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">set_skip_page_inherit</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, page: <span class="built_in">i32</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.set_page(page + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 而在此处的上下文中我们已实现了 impl Page for MyPaginate &#123;&#125;</span></span><br><span class="line"><span class="comment">// 所以此时MyPaginate就自动实现了PaginateInherit！</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#[cfg(test)]</span></span><br><span class="line"><span class="keyword">mod</span> tests &#123;</span><br><span class="line">    <span class="meta">#[test]</span></span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">test_trait_inherit</span></span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut</span> my_paginate = MyPaginate &#123;</span><br><span class="line">            page: <span class="number">1</span>,</span><br><span class="line">            per_page: <span class="number">10</span>,</span><br><span class="line">        &#125;;</span><br><span class="line">        my_paginate.set_page(<span class="number">1</span>);</span><br><span class="line">        my_paginate.set_perpage(<span class="number">100</span>);</span><br><span class="line">        my_paginate.set_skip_page_inherit(<span class="number">12</span>);</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"my_paginate: &#123;:?&#125;"</span>, my_paginate);</span><br><span class="line">        <span class="comment">// output: my_paginate: MyPaginate &#123; page: 13, per_page: 100 &#125;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>综上，我们展示了Rust如何使用<code>struct</code>和<code>trait</code>（特质）将数据结构定义和行为实现相分离，Rust推荐优先使用组合而不是继承。通过将数据结构和行为实现相分离，不仅仅是编码语法上的改变，更是从设计思想上出发，将现实世界中的数据和行为抽象解耦，使多变的行为得以灵活扩展而不必影响少变的数据结构定义或干扰已有行为定义和实现。这将大大提高我们对现实的抽象灵活表达能力，而这，也将有助于我们打造出更安全可靠的系统，你觉得呢？</p>
 
       
     </div>
@@ -510,8 +484,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/11/16/mysql-transacion-with-proxy/" rel="next" title="MySQL事务引发的一次线上Bug">
-                <i class="fa fa-chevron-left"></i> MySQL事务引发的一次线上Bug
+              <a href="/2019/11/16/hello-rust/" rel="next" title="Rust入门简介">
+                <i class="fa fa-chevron-left"></i> Rust入门简介
               </a>
             
           </div>
@@ -519,10 +493,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/17/rust-data-type/" rel="prev" title="理解Rust中的类型设计 - Objects and behavior">
-                理解Rust中的类型设计 - Objects and behavior <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -684,7 +654,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择rust的三大理由"><span class="nav-number">1.</span> <span class="nav-text">选择Rust的三大理由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rust的发展历史和生态现状"><span class="nav-number">2.</span> <span class="nav-text">Rust的发展历史和生态现状</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#对象和行为"><span class="nav-number">1.</span> <span class="nav-text">对象和行为</span></a></li></ol></div>
             
 
           </div>
